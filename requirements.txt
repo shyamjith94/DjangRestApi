@@ -1,4 +1,4 @@
 Django>=3.0,<=3.0
 djangorestframework>=3.10.3,<=3.10.3
 psycopg2>=2.7.5,<2.8.0
-flake>=3.6.0,
+
