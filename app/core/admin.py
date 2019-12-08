@@ -17,6 +17,15 @@ class UserAdmin(BaseUserAdmin):
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (_('Important date'), {'fields': ('last_login',)}),  # last login information
         )
+    # add new user
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password1', 'password2'),
+
+            }),
+
+        )
 
 
 admin.site.register(models.User, UserAdmin)
