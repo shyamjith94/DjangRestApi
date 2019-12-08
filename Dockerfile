@@ -5,7 +5,14 @@ ENV PYTHONUNBUFFERED 1
 
 # INSTALL DEPENDENCIES
 COPY ./requirements.txt /requirements.txt
+# POSTGRESS INSTALL
+RUN apk add --update --no-cache postgresql-client
+RUN apk add --update --no-cache --virtual .tmp-build-deps \
+    gcc libc-dev linux-headers postgresql-dev
 RUN pip install -r /requirements.txt
+
+# DEELETE THAT TEMP REQUIREMNTS
+RUN apk del .tmp-build-deps
 
 # SET UP DIRECTORY STRUCTURE
 RUN mkdir /app
