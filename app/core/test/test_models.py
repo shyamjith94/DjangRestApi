@@ -35,12 +35,4 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_active)
         self.assertTrue(user.is_staff)
         self.assertTrue(user.is_superuser)
-        try:
-            # username is None for the AbstractUser option
-            # username does not exist for the AbstractBaseUser option
-            self.assertIsNone(user.ema)
-        except AttributeError:
-            pass
-        with self.assertRaises(ValueError):
-            get_user_model().object.create_superuser(
-                email='super@user.com', password='foo', is_superuser=False)
+
