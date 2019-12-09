@@ -38,7 +38,7 @@ class ModelTests(TestCase):
         try:
             # username is None for the AbstractUser option
             # username does not exist for the AbstractBaseUser option
-            self.assertIsNone(user.username)
+            self.assertIsNone(user.ema)
         except AttributeError:
             pass
         with self.assertRaises(ValueError):
