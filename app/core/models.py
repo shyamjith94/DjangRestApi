@@ -2,35 +2,48 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+from django.utils.translation import gettext as _
 
 
 # Create your models here.
+class UserManager(BaseUserManager):
 
-class UserManger(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
-        """Create And Save New"""
+        """Creates and saves a new user"""
         if not email:
-            raise ValueError('User Must Have Email')
+            raise ValueError('Users must have an email address!')
         user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
+
         return user
 
-    def create_superuser(self, email, password):
-        """Create And Save New Superuser"""
+    def create_superuser(self, email, password, **extra_fields):
+        """Creates and saves a super user"""
         user = self.create_user(email, password)
-        user.is_active = True
-        user.is_staff = True
-        user.is_superuser = True
-        user.save(self._db)
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+        user.save()
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError(_('Superuser must have is_staff=True.'))
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError(_('Superuser must have is_superuser=True.'))
         return user
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    """Custom User Model That Support Email of instead of Username"""
+    """Custom User Model that supports using email instead of username"""
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    object = UserManger()
+
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+    object = UserManager()
+
+    def __str__(self):
+        return self.email
+
+
