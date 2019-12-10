@@ -7,13 +7,12 @@ from core.models import Tag
 
 # Create your views here.
 
-class TagViewSet(
-    viewsets.GenericViewSet,
-    mixins.ListModelMixin
-        ):
+class TagViewSet(viewsets.GenericViewSet,
+                 mixins.ListModelMixin,
+                 mixins.CreateModelMixin):
     """Recipe Tag View Set To Manage The DataBase"""
-    authentication_classes = (TokenAuthentication, )
-    permission_classes = (IsAuthenticated, )
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
 
@@ -21,3 +20,8 @@ class TagViewSet(
     def get_queryset(self):
         """Return Objects Only Current Authenticated User"""
         return self.queryset.filter(user=self.request.user).order_by('-name')
+
+    def perform_create(self, serializer):
+        """Create New Tag"""
+        serializer.save(user=self.request.user)
+
