@@ -6,7 +6,7 @@ from rest_framework import (
     permissions)
 from user.serializer import (
     UserSerializer,
-    AuthTokenSerializer
+    AuthTokenSerializer,
     )
 
 
