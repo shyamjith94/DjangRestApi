@@ -8,41 +8,32 @@ from core.models import (
     )
 
 
-# Create your views here.
-
-class TagViewSet(viewsets.GenericViewSet,
-                 mixins.ListModelMixin,
-                 mixins.CreateModelMixin):
-    """Recipe Tag View Set To Manage The DataBase"""
+class BaseRecipeViewClass(
+    viewsets.GenericViewSet,
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin
+    ):
+    """The Class Using To Avoid Duplication Of Code"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        """Object That Return Current Authenticated Users Only"""
+        return self.queryset.filter(user=self.request.user).order_by('-name')
+
+    def perform_create(self, serializer):
+        """Create New Object"""
+        serializer.save(user=self.request.user)
+
+
+class TagViewSet(BaseRecipeViewClass):
+    """Recipe Tag View Set To Manage The DataBase"""
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
 
-    # overriding default query set function
-    def get_queryset(self):
-        """Return Objects Only Current Authenticated User"""
-        return self.queryset.filter(user=self.request.user).order_by('-name')
 
-    def perform_create(self, serializer):
-        """Create New Tag"""
-        serializer.save(user=self.request.user)
-
-
-class IngredientsViewSet(viewsets.GenericViewSet,
-                         mixins.ListModelMixin,
-                         mixins.CreateModelMixin):
+class IngredientsViewSet(BaseRecipeViewClass):
     """Ingredients View Set To manage Ingredients In DataBase"""
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
     queryset = Ingredients.objects.all()
     serializer_class = serializers.IngredientsSerializer
 
-    # overriding default query set function
-    def get_queryset(self):
-        """Return Objects Only Current Authenticated User"""
-        return self.queryset.filter(user=self.request.user).order_by('-name')
-
-    def perform_create(self, serializer):
-        """Create New Ingredients"""
-        serializer.save(user=self.request.user)
