@@ -51,7 +51,12 @@ class RecipesViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(user=self.request.user).order_by('-title')
 
     def get_serializer_class(self):
+        """For Details View Choose Serializer Class Based On User Request"""
         # for recipe detail view check request action
         if self.action == 'retrieve':
             return serializers.RecipeDetailSerializer
         return self.serializer_class
+
+    def perform_create(self, serializer):
+        """Create Recipe For Authenticated User"""
+        return serializer.save(user=self.request.user)
