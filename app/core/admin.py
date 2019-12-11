@@ -33,6 +33,7 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Tag)
+admin.site.register(models.Ingredients)
 # class UserAdmin(BaseUserAdmin):
 #     ordering = ['id']
 #     list_display = ['email', 'name']
