@@ -28,7 +28,7 @@ RUN mkdir -p /vol/web/static
 
 RUN adduser -D user
 # CHANGE DIRECTORY PERMISSION AND OWNERSHIP BEFORE SWITCH USER
-RUN chown -r user:user /vol/
-RUN chmod 755 /vol/web
+RUN chown -R user:user /vol/
+RUN chmod -R 755 /vol/web
 
 USER user
