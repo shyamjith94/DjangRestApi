@@ -120,8 +120,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+# change static url from docker
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+# set root directory in docker
+MEDIA_ROOT = '/vol/web/media'
+STATIC_ROOT = '/vol/web/static'
 
 # User Auth Setting Custom
-
 AUTH_USER_MODEL = 'core.User'
