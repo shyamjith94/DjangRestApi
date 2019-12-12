@@ -48,9 +48,25 @@ class RecipesViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
+    def _params_to_ints(self, qs):
+        """Private Function that Convert list Of string ids to list of integer ids"""
+        return [int(str_id) for str_id in qs.split(',')]
+
     def get_queryset(self):
         """Retrieve The Recipes To Authenticated User"""
-        return self.queryset.filter(user=self.request.user).order_by('-title')
+        # filter by tag, if tag is provided in query prams then it filter else its set None
+        tags = self.request.query_params.get('tag')
+        ingredients = self.request.query_params.get('ingredients')
+        queryset = self.queryset
+        if tags:
+            tag_ids = self._params_to_ints(tags)
+            # tag_id__id__in double underscore using for foreign key filter
+            queryset = queryset.filter(tag__id__in=tag_ids)
+
+        if ingredients:
+            ingredient_ids = self._params_to_ints(ingredients)
+            queryset = queryset.filter(ingredients__id__in=ingredient_ids)
+        return queryset.filter(user=self.request.user)
 
     def get_serializer_class(self):
         """For Details View Choose Serializer Class Based On User Request"""
@@ -79,4 +95,3 @@ class RecipesViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)
         return Response(serializer.eror, status.HTTP_400_BAD_REQUEST)
-
